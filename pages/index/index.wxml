@@ -1,13 +1,15 @@
 <!--index.wxml-->
+<import src="../../templates/navbar.wxml"/>
 <view class="container">
   <view class="userinfo">
     <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" mode="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
   </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
+  <template is="navbar" data="{{...currentIndex}}"/>
+  <view class="canvas-wrap">
+      <canvas style="width: 240px; height: 240px;" canvas-id="firstCanvas"></canvas>
+      <button>开始</button>
   </view>
+  <navigator class="btn-user icon-user" url="/pages/userCenter/userCenter">
+    <image style="width: 32px; height: 32px;" src="../../images/icon_user.svg" alt="个人中心"></image>
+  </navigator>
 </view>

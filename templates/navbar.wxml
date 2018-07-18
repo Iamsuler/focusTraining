@@ -1,0 +1,7 @@
+<template name="navbar">
+  <view class="navbar">
+    <navigator class="{{index == 1 ? 'active': ''}}" url="/page/index/index"><span>计时</span></navigator>
+    <navigator class="{{index == 2 ? 'active': ''}}" url="/page/count/count"><span>统计</span></navigator>
+    <navigator class="{{index == 3 ? 'active': ''}}" url="/page/ranking/ranking"><span>排行</span></navigator>
+  </view>
+</template>
