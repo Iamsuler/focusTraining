@@ -1,31 +1,38 @@
 /**app.wxss**/
+page {
+  min-height: 100%;
+}
 .container {
+  min-height: 100%;
   height: 100%;
 }
+view, text {
+  box-sizing: border-box;
+}
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.navigator-hover {
+  background-color: transparent;
+  opacity: 1;
+}
+.btn {
+  display: block;
+  width: 240rpx;
   height: 88rpx;
-  padding: 0 140rpx;
-  font-size: 30rpx;
-}
-.navbar > navigator {
-  width: 120rpx;
-  height: 42rpx;
-  line-height: 42rpx;
+  line-height: 84rpx;
+  margin: 0 auto;
+  border: 2rpx solid transparent;
+  border-radius: 20rpx;
   text-align: center;
-  
+  color: #fff;
+  background-color: #fff;
 }
-.navbar > navigator > span {
-  display: inline-block;
-  padding-bottom: 8rpx;
-  border-bottom: 4rpx solid transparent;
-  color: rgba(0,0,0,0.40);
+
+.btn-prime {
+  background-color: #5C9965;
 }
-.navbar > .active > span {
-  border-bottom-color: rgba(0,0,0,0.80);
-  color: rgba(0,0,0,0.80);
+
+.btn-prime-clear {
+  border-color: #5C9965;
+  color: #5C9965;
 }
 

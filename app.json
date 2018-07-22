@@ -1,6 +1,8 @@
 {
   "pages":[
     "pages/index/index",
+    "pages/userCenter/userCenter",
+    "pages/evaluating/evaluating",
     "pages/logs/logs"
   ],
   "window":{

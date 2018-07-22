@@ -1,15 +1,218 @@
 <!--index.wxml-->
-<import src="../../templates/navbar.wxml"/>
 <view class="container">
   <view class="userinfo">
     <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
   </view>
-  <template is="navbar" data="{{...currentIndex}}"/>
-  <view class="canvas-wrap">
-      <canvas style="width: 240px; height: 240px;" canvas-id="firstCanvas"></canvas>
-      <button>开始</button>
+  <view class="navbar">
+    <view bindtap="switchTab" data-index="1" class="{{curTabIndex == 1 ? 'active': ''}}"><text>计时</text></view>
+    <view bindtap="switchTab" data-index="2" class="{{curTabIndex == 2 ? 'active': ''}}"><text>统计</text></view>
+    <view bindtap="switchTab" data-index="3" class="{{curTabIndex == 3 ? 'active': ''}}"><text>排行</text></view>
   </view>
-  <navigator class="btn-user icon-user" url="/pages/userCenter/userCenter">
-    <image style="width: 32px; height: 32px;" src="../../images/icon_user.svg" alt="个人中心"></image>
+  <view class="pannel-wrap">
+    <view class="canvas-wrap {{curTabIndex == 1 ? 'active' : ''}}">
+      <view class="clock-wrap" hidden="{{isCountDown}}">
+        <canvas bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="firstCanvas"></canvas>
+        <button class="btn-begin btn btn-prime" bindtap="startCountDown">开始</button>
+      </view>
+      <view class="count-wrap" hidden="{{!isCountDown}}">
+        <canvas style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="countDown"></canvas>
+        <view hidden="{{isAbandon}}">
+          <button bindtap="handleAbandon" data-type="1" class="btn btn-prime-clear">放弃</button>
+        </view>
+        <view hidden="{{!isAbandon}}">
+          <button bindtap="handleAbandon" data-type="2" class="btn btn-prime-clear">二思</button>
+          <button bindtap="handleAbandon" data-type="2" class="btn btn-prime-clear">三思</button>
+          <button bindtap="confirmAbandon" class="btn btn-prime-clear">确认放弃</button>
+        </view>
+      </view>
+    </view>
+    <view class="count-result {{curTabIndex == 2 ? 'active' : ''}}">
+      <view class="count-all-wrap">
+        <view class="count-all">
+          <view class="count-all-item">
+            <text class="count">2</text>
+            <text class="desc">今日专注次数</text>
+          </view>
+          <view class="count-all-item">
+            <text class="count">128</text>
+            <text class="desc">累计专注次数</text>
+          </view>
+        </view>
+        <view class="count-all">
+          <view class="count-all-item">
+            <view class="count">60<text class="subup">min</text></view>
+            <text class="desc">今日专注时长</text>
+          </view>
+          <view class="count-all-item">
+            <view class="count">67.5<text class="subup">h</text></view>
+            <text class="desc">累计专注时长</text>
+          </view>
+        </view>
+      </view>
+      <view class="h20"></view>
+      <view class="count-week">
+        <view class="count-title">
+          <text>最近一周完成</text>
+          <text>13次专注</text>
+        </view>
+        <view class="week-canvas">
+          <canvas style="width: 315px; height: 130px;" canvas-id="weekResult"></canvas>
+        </view>
+      </view>
+      <view class="h20"></view>
+      <view class="time-distribute">
+        <view class="count-title">
+          <text>最近一周完成</text>
+          <text>13次专注</text>
+        </view>
+        <view class="count-time">
+          <view class="count-time-item">
+            <text class="count-time-percent">上午：52%</text>
+            <text class="time-range">(06:00～12:00)</text>
+          </view>
+          <view class="count-time-item">
+            <text class="count-time-percent">下午：52%</text>
+            <text class="time-range">(12:00～18:00)</text>
+          </view>
+          <view class="count-time-item">
+            <text class="count-time-percent">晚上：52%</text>
+            <text class="time-range">(18:00～00:00)</text>
+          </view>
+          <view class="count-time-item">
+            <text class="count-time-percent">凌晨：52%</text>
+            <text class="time-range">(00:00～06:00)</text>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="rank-wrap {{curTabIndex == 3 ? 'active' : ''}}">
+      <view class="remain-time">
+        <text>本周剩余时间</text>
+        <view class="time-wrap">
+          <text class="icon-time">{{weekRemainTime.days}}</text>
+          <text>天</text>
+          <text class="icon-time">{{weekRemainTime.hour}}</text>
+          <text>时</text>
+          <text class="icon-time">{{weekRemainTime.min}}</text>
+          <text>分</text>
+        </view>
+      </view>
+      <view class="h20"></view>
+      <view class="rank-list">
+        <view class="rank-item">
+          <image src="/images/touxiang.png"></image>
+          <view class="user">
+            <text class="name">张曼玉</text>
+            <view>
+              <text class="icon-total-success">12</text>
+              <text class="icon-total-fail">12</text>
+              <text class="icon-total">12</text>
+            </view>
+          </view>
+          <view class="number">
+            <text class="icon-number">1</text>
+            <text>排名</text>
+          </view>
+        </view>
+        <view class="rank-item">
+          <image src="/images/touxiang.png"></image>
+          <view class="user">
+            <text class="name">张曼玉</text>
+            <view>
+              <text class="icon-total-success">12</text>
+              <text class="icon-total-fail">12</text>
+              <text class="icon-total">12</text>
+            </view>
+          </view>
+          <view class="number">
+            <text class="icon-number">1</text>
+            <text>排名</text>
+          </view>
+        </view>
+        <view class="rank-item">
+          <image src="/images/touxiang.png"></image>
+          <view class="user">
+            <text class="name">张曼玉</text>
+            <view>
+              <text class="icon-total-success">12</text>
+              <text class="icon-total-fail">12</text>
+              <text class="icon-total">12</text>
+            </view>
+          </view>
+          <view class="number">
+            <text class="icon-number">1</text>
+            <text>排名</text>
+          </view>
+        </view>
+        <view class="rank-item">
+          <image src="/images/touxiang.png"></image>
+          <view class="user">
+            <text class="name">张曼玉</text>
+            <view>
+              <text class="icon-total-success">12</text>
+              <text class="icon-total-fail">12</text>
+              <text class="icon-total">12</text>
+            </view>
+          </view>
+          <view class="number">
+            <text class="icon-number">1</text>
+            <text>排名</text>
+          </view>
+        </view>
+        <view class="rank-item">
+          <image src="/images/touxiang.png"></image>
+          <view class="user">
+            <text class="name">张曼玉</text>
+            <view>
+              <text class="icon-total-success">12</text>
+              <text class="icon-total-fail">12</text>
+              <text class="icon-total">12</text>
+            </view>
+          </view>
+          <view class="number">
+            <text class="icon-number">1</text>
+            <text>排名</text>
+          </view>
+        </view>
+        <view class="rank-item">
+          <image src="/images/touxiang.png"></image>
+          <view class="user">
+            <text class="name">张曼玉</text>
+            <view>
+              <text class="icon-total-success">12</text>
+              <text class="icon-total-fail">12</text>
+              <text class="icon-total">12</text>
+            </view>
+          </view>
+          <view class="number">
+            <text class="icon-number">1</text>
+            <text>排名</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="modal" hidden="{{!resultSuccess}}">
+    <view class="modal-wrap modal-success">
+      <text class="title">晒战绩</text>
+      <text class="result">成功</text>
+      <view class="icon-result"></view>
+      <text class="result-message">计划专注{{plainTime}}分钟，结果一转眼\n就完成，好开心啊！</text>
+      <button class="btn" open-type="share">找朋友们挑战我</button>
+      <view class="icon-cancle" bindtap="closeModal" data-type="success"></view>
+    </view>
+  </view>
+  <view class="modal" hidden="{{!resultFail}}">
+    <view class="modal-wrap modal-fail">
+      <text class="title">晒战绩</text>
+      <text class="result">失败</text>
+      <view class="icon-result"></view>
+      <text class="result-message">计划专注{{plainTime}}分钟，结果{{realTime}}分钟\n就废了，好丧啊！</text>
+      <button class="btn" open-type="share">找朋友们鼓励我</button>
+      <view bindtap="closeModal" data-type="fail" class="icon-cancle"></view>
+    </view>
+  </view>
+  <navigator hidden="{{curTabIndex != 1}}" class="btn-user icon-user" url="/pages/userCenter/userCenter">
+    <image style="width: 64rpx; height: 64rpx;" src="/images/icon_user.svg" alt="个人中心"></image>
   </navigator>
 </view>
