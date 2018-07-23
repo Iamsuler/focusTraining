@@ -35,19 +35,20 @@
   display: block;
 }
 
-
-.btn-user {
-  position: absolute;
-  bottom: 100rpx;
+.fixed-btn {
+  position: fixed;
+  bottom: 0;
   left: 50%;
+  transform: translateX(-32rpx);
+}
+.btn-user {
   width: 64rpx;
   height: 64rpx;
-  transform: translateX(-32rpx);
+  margin: 54rpx auto 100rpx;
 }
 
 .canvas-wrap {
   margin-top: 160rpx;
-  padding-bottom: 164rpx;
 }
 
 .count-wrap > view,

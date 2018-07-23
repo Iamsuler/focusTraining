@@ -11,7 +11,7 @@
   <view class="pannel-wrap">
     <view class="canvas-wrap {{curTabIndex == 1 ? 'active' : ''}}">
       <view class="clock-wrap" hidden="{{isCountDown}}">
-        <canvas bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="firstCanvas"></canvas>
+        <canvas bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd" style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="firstCanvas"></canvas>
         <button class="btn-begin btn btn-prime" bindtap="startCountDown">开始</button>
       </view>
       <view class="count-wrap" hidden="{{!isCountDown}}">
@@ -212,7 +212,7 @@
       <view bindtap="closeModal" data-type="fail" class="icon-cancle"></view>
     </view>
   </view>
-  <navigator hidden="{{curTabIndex != 1}}" class="btn-user icon-user" url="/pages/userCenter/userCenter">
+  <navigator hidden="{{curTabIndex != 1}}" class="btn-user {{isAbandon ? '' : 'fixed-btn'}}" url="/pages/userCenter/userCenter">
     <image style="width: 64rpx; height: 64rpx;" src="/images/icon_user.svg" alt="个人中心"></image>
   </navigator>
 </view>

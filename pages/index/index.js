@@ -62,10 +62,10 @@ Page({
       originX: 120,
       originY: 120,
       originR: 90,
-      circleThinkness: 10,      //元环粗细
+      ballR: 10,
+      circleThinkness: 5,      //元环粗细
       acrossColor: "#ccc",      //底环颜色
       fillColor: "#5C9965",     //顶环颜色
-      Begin: .5,//(0-1)        //起始位置
       FontSize: 44              //文字大小
     },
     times: 300,
@@ -75,15 +75,17 @@ Page({
     resultSuccess: false,
     resultFail: false,
     
-    plainTime: 15,
-    realTime: 15,
-    fucosRemainMinite: 15,
+    plainTime: 10,
+    realTime: 0,
 
     weekRemainTime: {
       days: '0',
       hour: '00',
       min: '00'
     },
+
+    // 记录上一个rad 用以判断是否在第四象限
+    lastTimeStr: .166667,
 
     remainTimer: null,
   },
@@ -183,6 +185,7 @@ Page({
 
   },
   drawClock (endAngle, timeStr) {
+    endAngle = endAngle <= .166667 ? .166667 : endAngle;
     let context = wx.createCanvasContext('firstCanvas');
 
     // context.clearRect(0, 0, this.data.canvasParams.width, this.data.canvasParams.height);
@@ -193,6 +196,28 @@ Page({
     context.beginPath();
     context.arc(this.data.canvasParams.originX, this.data.canvasParams.originY, this.data.canvasParams.originR, 0, 2 * Math.PI, true);
     context.stroke();
+
+    context.translate(120,120);
+    context.save();
+
+    // context.rotate(Math.PI/4);
+    // context.drawImage('/images/icon_pointer.png',-120,-120);
+    // context.restore();
+
+    // 绘制刻度
+    for (let index = 0; index < 12; index++) {
+      context.beginPath();
+      context.moveTo(0,90);
+      context.lineTo(0,80);
+      context.lineWidth = 2;
+      // context.strokeStyle = "blue";
+      context.stroke();
+      context.rotate(Math.PI/6);
+
+    }
+    context.restore();
+    context.translate(-120,-120);
+    
 
     //有色环
     context.strokeStyle = this.data.canvasParams.fillColor;
@@ -210,16 +235,13 @@ Page({
     context.fillText(timeStr, this.data.canvasParams.originX, this.data.canvasParams.originY);
 
     //圆珠
-    // context.fillStyle = this.data.canvasParams.fillColor;
-    // context.beginPath();
-    // let d = this.calOffset(endAngle * 2 * Math.PI, originR);
-    // console.log(d);
-    // context.arc(originX + d.x, originY + d.y, ballR, 0, 2 * Math.PI, true);
-    // context.fill();
+    context.fillStyle = this.data.canvasParams.fillColor;
+    context.beginPath();
+    let d = this.calOffset(endAngle * 2 * Math.PI, this.data.canvasParams.originR);
+    context.arc(this.data.canvasParams.originX + d.x, this.data.canvasParams.originY + d.y, this.data.canvasParams.ballR, 0, 2 * Math.PI, true);
+    context.fill();
     // let img=new Image();
     // img.src="/images/icon_pointer";
-
-    context.drawImage('/images/icon_pointer.svg',0,0);
 
     context.draw()
   },
@@ -257,7 +279,7 @@ Page({
   handleTouchStart (event) {
     let curX = event.touches[0].x, curY = event.touches[0].y;
     //计算弧度
-    let rad = Math.atan2(this.data.canvasParams.originY - curY, curX - this.data.canvasParams.originX);
+    let rad = Math.atan2(this.data.canvasParams.originX - curX, curY - this.data.canvasParams.originY);
 
     // this.drawClock((Math.PI + rad) / (2 * Math.PI));
   },
@@ -268,19 +290,48 @@ Page({
 
     let endAngle = (Math.PI + rad) / (2 * Math.PI);
     let timeStr = Math.floor(endAngle * 60);
+
+    if (timeStr <= 10) {
+      timeStr = 10
+
+      if (this.data.lastTimeStr > 45) {
+        timeStr = 60;
+        endAngle = 1;
+      }
+    } else {
+      let num1 = Math.floor(timeStr / 5), num2 = timeStr % 5;
+      timeStr = num2 >= 3 ? (num1 + 1) * 5 : num1 * 5;
+    }
     
     this.setData({
-      plainTime: timeStr
+      plainTime: timeStr,
+      lastTimeStr: timeStr
     })
-    
-    timeStr = timeStr < 10 ? `0${timeStr}:00` : `${timeStr}:00`;
-    console.log(endAngle)
 
-    if (endAngle >= 1 || endAngle <= 0) {
-      return false;
+    throttle(this.drawClock(endAngle, `${timeStr}:00`), 1000)
+  },
+  handleTouchEnd (event) {
+    let curX = event.changedTouches[0].x, curY = event.changedTouches[0].y;
+    //计算弧度
+    let rad = Math.atan2(this.data.canvasParams.originX - curX, curY - this.data.canvasParams.originY);
+
+    let endAngle = (Math.PI + rad) / (2 * Math.PI);
+
+    let timeStr = Math.floor(endAngle * 60);
+
+    if (timeStr <= 10) {
+      timeStr = 10
+    } else {
+      let num1 = Math.floor(timeStr / 5), num2 = timeStr % 5;
+      timeStr = num2 >= 3 ? (num1 + 1) * 5 : num1 * 5;
     }
 
-    throttle(this.drawClock(endAngle, timeStr), 1000)
+
+    endAngle = timeStr / 60;
+
+    this.drawClock(endAngle, `${timeStr}:00`);
+
+    this.drawCountDown(1, `${timeStr}:00`)
   },
   startCountDown () {
 
