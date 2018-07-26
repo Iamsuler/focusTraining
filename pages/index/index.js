@@ -73,7 +73,7 @@ Page({
     isAbandon: false,
 
     resultSuccess: false,
-    resultFail: false,
+    resultFail: true,
     
     plainTime: 10,
     realTime: 0,
@@ -88,11 +88,42 @@ Page({
     lastTimeStr: .166667,
 
     remainTimer: null,
+    // 记录指针位置
+    ballRegion: {
+      x0: 0,
+      y0: 0,
+      x1: 0,
+      y1: 0,
+    },
+    inRegion: false,
+
+  },
+  onShareAppMessage () {
+    return {
+      title: '自定义转发标题哈哈',
+      path: "pages/index/index"
+    }
+  },
+  handleShare () {
+    console.log('showShareMenu')
+    wx.showShareMenu({
+      withShareTicket: true
+    })
   },
   //事件处理函数
   bindViewTap: function () {
     wx.navigateTo({
       url: '../logs/logs'
+    })
+  },
+  setUserStorage () {
+    wx.setStorage({
+      key: 'userInfo',
+      value: JSON.stringify(this.data.userInfo)
+    })
+    wx.setStorage({
+      key: 'hasUserInfo',
+      value: true
     })
   },
   onLoad: function () {
@@ -160,7 +191,9 @@ Page({
     let timeStr = this.data.plainTime < 10 ? '0' + this.data.plainTime + ':00' : this.data.plainTime + ':00';
 
     this.drawClock(startAngle, timeStr);
-    this.drawCountDown(1, timeStr)
+    this.drawCountDown(1, timeStr);
+
+    this.calRegion(startAngle);
   },
   getUserInfo: function (e) {
     app.globalData.userInfo = e.detail.userInfo
@@ -184,6 +217,23 @@ Page({
     return `${minites}:${seconds}`
 
   },
+  calRegion (endAngle) {
+    let x = Math.sin(endAngle * 2 * Math.PI) * this.data.canvasParams.originR, 
+        y = -Math.cos(endAngle * 2 * Math.PI) * this.data.canvasParams.originR;
+
+    let x0 = x - 20,
+        x1 = x + 20,
+        y0 = y - 20,
+        y1 = y + 20;
+    this.setData({
+      ballRegion: {
+        x0: x0,
+        x1: x1,
+        y0: y0,
+        y1: y1
+      }
+    })
+  },
   drawClock (endAngle, timeStr) {
     endAngle = endAngle <= .166667 ? .166667 : endAngle;
     let context = wx.createCanvasContext('firstCanvas');
@@ -200,10 +250,6 @@ Page({
     context.translate(120,120);
     context.save();
 
-    // context.rotate(Math.PI/4);
-    // context.drawImage('/images/icon_pointer.png',-120,-120);
-    // context.restore();
-
     // 绘制刻度
     for (let index = 0; index < 12; index++) {
       context.beginPath();
@@ -215,7 +261,11 @@ Page({
       context.rotate(Math.PI/6);
 
     }
+
+    context.rotate(endAngle * 2 * Math.PI);
+    context.drawImage('/images/icon_pointer.svg',-120,-120);
     context.restore();
+
     context.translate(-120,-120);
     
 
@@ -235,11 +285,14 @@ Page({
     context.fillText(timeStr, this.data.canvasParams.originX, this.data.canvasParams.originY);
 
     //圆珠
-    context.fillStyle = this.data.canvasParams.fillColor;
-    context.beginPath();
-    let d = this.calOffset(endAngle * 2 * Math.PI, this.data.canvasParams.originR);
-    context.arc(this.data.canvasParams.originX + d.x, this.data.canvasParams.originY + d.y, this.data.canvasParams.ballR, 0, 2 * Math.PI, true);
-    context.fill();
+    // context.fillStyle = this.data.canvasParams.fillColor;
+    // context.beginPath();
+    // let d = this.calOffset(endAngle * 2 * Math.PI, this.data.canvasParams.originR);
+
+    // console.log(d);
+
+    // context.arc(this.data.canvasParams.originX + d.x, this.data.canvasParams.originY + d.y, this.data.canvasParams.ballR, 0, 2 * Math.PI, true);
+    // context.fill();
     // let img=new Image();
     // img.src="/images/icon_pointer";
 
@@ -277,13 +330,28 @@ Page({
     context.draw()
   },
   handleTouchStart (event) {
-    let curX = event.touches[0].x, curY = event.touches[0].y;
-    //计算弧度
-    let rad = Math.atan2(this.data.canvasParams.originX - curX, curY - this.data.canvasParams.originY);
+    let curX = event.touches[0].x - this.data.canvasParams.originX, curY = event.touches[0].y - this.data.canvasParams.originY;
 
-    // this.drawClock((Math.PI + rad) / (2 * Math.PI));
+    console.log(curX, curY)
+    //计算弧度
+    // let rad = Math.atan2(this.data.canvasParams.originX - curX, curY - this.data.canvasParams.originY);
+    let ballRegion = this.data.ballRegion;
+
+    if (curX > ballRegion.x0 && curX < ballRegion.x1 && curY > ballRegion.y0 && curY < ballRegion.y1) {
+      this.setData({
+        inRegion: true
+      })
+    } else {
+      this.setData({
+        inRegion: false
+      })
+    }
+
   },
   handleTouchMove (event) {
+    if (!this.data.inRegion) {
+      return false;
+    }
     let curX = event.touches[0].x, curY = event.touches[0].y;
     //计算弧度
     let rad = Math.atan2(this.data.canvasParams.originX - curX, curY - this.data.canvasParams.originY);
@@ -311,6 +379,11 @@ Page({
     throttle(this.drawClock(endAngle, `${timeStr}:00`), 1000)
   },
   handleTouchEnd (event) {
+
+    if (!this.data.inRegion) {
+      return false;
+    }
+
     let curX = event.changedTouches[0].x, curY = event.changedTouches[0].y;
     //计算弧度
     let rad = Math.atan2(this.data.canvasParams.originX - curX, curY - this.data.canvasParams.originY);
@@ -332,6 +405,8 @@ Page({
     this.drawClock(endAngle, `${timeStr}:00`);
 
     this.drawCountDown(1, `${timeStr}:00`)
+
+    this.calRegion(endAngle);
   },
   startCountDown () {
 

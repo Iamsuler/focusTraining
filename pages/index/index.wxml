@@ -25,6 +25,33 @@
           <button bindtap="confirmAbandon" class="btn btn-prime-clear">确认放弃</button>
         </view>
       </view>
+      <navigator hidden="{{curTabIndex != 1}}" class="btn-user" url="/pages/userCenter/userCenter">
+        <image style="width: 64rpx; height: 64rpx;" src="/images/icon_user.svg" alt="个人中心"></image>
+      </navigator>
+      <cover-view class="modal" hidden="{{!resultSuccess}}">
+        <cover-view class="modal-wrap modal-success">
+          <cover-view class="title">晒战绩</cover-view>
+          <cover-view class="result">成功</cover-view>
+          <cover-image class="icon-result" src="/images/icon_smile.png"></cover-image>
+          <cover-view class="result-message">计划专注{{plainTime}}分钟，结果一转眼\n就完成，好开心啊！</cover-view>
+          <cover-view bindtap="handleShare" class="btn btn-cover">找朋友们挑战我
+            <button class="btn-cover-inner" open-type="share"></button>
+          </cover-view>
+          <cover-image class="icon-cancle" bindtap="closeModal" data-type="success" src="/images/icon_cancle.png"></cover-image>
+        </cover-view>
+      </cover-view>
+      <cover-view class="modal" hidden="{{!resultFail}}">
+        <cover-view class="modal-wrap modal-fail">
+          <cover-view class="title">晒战绩</cover-view>
+          <cover-view class="result">失败</cover-view>
+          <cover-image class="icon-result" src="/images/icon_smile.png"></cover-image>
+          <cover-view class="result-message">计划专注{{plainTime}}分钟，结果{{realTime}}分钟\n就废了，好丧啊！</cover-view>
+          <cover-view bindtap="handleShare" class="btn btn-cover">找朋友们鼓励我
+            <button class="btn-cover-inner" open-type="share"></button>
+          </cover-view>
+          <cover-image class="icon-cancle" bindtap="closeModal" data-type="fail" src="/images/icon_cancle.png"></cover-image>
+        </cover-view>
+      </cover-view>
     </view>
     <view class="count-result {{curTabIndex == 2 ? 'active' : ''}}">
       <view class="count-all-wrap">
@@ -192,27 +219,4 @@
       </view>
     </view>
   </view>
-  <view class="modal" hidden="{{!resultSuccess}}">
-    <view class="modal-wrap modal-success">
-      <text class="title">晒战绩</text>
-      <text class="result">成功</text>
-      <view class="icon-result"></view>
-      <text class="result-message">计划专注{{plainTime}}分钟，结果一转眼\n就完成，好开心啊！</text>
-      <button class="btn" open-type="share">找朋友们挑战我</button>
-      <view class="icon-cancle" bindtap="closeModal" data-type="success"></view>
-    </view>
-  </view>
-  <view class="modal" hidden="{{!resultFail}}">
-    <view class="modal-wrap modal-fail">
-      <text class="title">晒战绩</text>
-      <text class="result">失败</text>
-      <view class="icon-result"></view>
-      <text class="result-message">计划专注{{plainTime}}分钟，结果{{realTime}}分钟\n就废了，好丧啊！</text>
-      <button class="btn" open-type="share">找朋友们鼓励我</button>
-      <view bindtap="closeModal" data-type="fail" class="icon-cancle"></view>
-    </view>
-  </view>
-  <navigator hidden="{{curTabIndex != 1}}" class="btn-user {{isAbandon ? '' : 'fixed-btn'}}" url="/pages/userCenter/userCenter">
-    <image style="width: 64rpx; height: 64rpx;" src="/images/icon_user.svg" alt="个人中心"></image>
-  </navigator>
 </view>

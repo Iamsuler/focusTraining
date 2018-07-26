@@ -1,14 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="240px" height="240px" viewBox="0 0 240 240" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 49 (51002) - http://www.bohemiancoding.com/sketch -->
-    <title>指针@1x</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-2" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="1-默认30min" transform="translate(-68.000000, -231.000000)">
-            <g id="指针" transform="translate(188.000000, 351.000000) rotate(90.000000) translate(-188.000000, -351.000000) translate(68.000000, 231.000000)">
-                <path d="M120,30 L120,10" id="Line-2" stroke="#5C9965" stroke-width="3" stroke-linecap="round"></path>
-                <path d="M120,39.5 L120,30" id="Line-2" stroke="#5C9965" stroke-width="3" stroke-linecap="round"></path>
+    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g transform="translate(-68.000000, -231.000000)">
+            <g transform="translate(188.000000, 351.000000) translate(-188.000000, -351.000000) translate(68.000000, 231.000000)">
+                <path d="M120,30 L120,10" stroke="#5C9965" stroke-width="3" stroke-linecap="round"></path>
+                <path d="M120,39.5 L120,30" stroke="#5C9965" stroke-width="3" stroke-linecap="round"></path>
                 <path d="M120,5 C125.4411,5 130.793941,5.37787773 136.033713,6.10882165 C138.133564,6.40174915 138.434938,8.2186113 138.056161,9.21203989 C137.287624,11.2277078 136.679017,12.8239225 136.23034,14.000684 C135.606451,15.6369768 134.331754,15.9603279 132.927634,15.787934 C128.691301,15.2678088 124.376926,15 120,15 C115.608489,15 111.279946,15.2695966 107.030018,15.793142 C105.331375,16.0023965 104.171919,15.0557024 103.78739,14.0471832 C103.000543,11.9834943 102.383701,10.3656833 101.936865,9.19375048 C101.261123,7.4214596 102.019729,6.37720592 104.139821,6.08474856 C109.324228,5.36958254 114.618953,5 120,5 Z" fill="#5C9965"></path>
             </g>
         </g>

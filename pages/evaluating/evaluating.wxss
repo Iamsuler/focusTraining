@@ -19,7 +19,7 @@ page {
 }
 
 .question-item {
-  margin-bottom: 50rpx;
+  margin-bottom: 80rpx;
 }
 .question-item > .topic {
   line-height: 48rpx;
@@ -32,23 +32,23 @@ page {
   display: block;
   margin-bottom: 30rpx;
 }
-.radio-group > .radio > radio {
-  display: none;
-}
-.radio-group > .radio > text {
-  display: block;
-  padding-left: 56rpx;
+.radio-group > .radio {
+  display: flex;
   font-size: 30rpx;
   line-height: 42rpx;
   color: rgba(0,0,0,0.60);
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAMAAABhEH5lAAAANlBMVEUAAADQ0NDQ0NDQ0NDJycnQ0NDQ0NDQ0NDQ0NDR0dHR0dHQ0NDQ0NDQ0NDQ0NDR0dHT09PQ0NBzSEtZAAAAEXRSTlMA23a3CTEp98KxqcfFgn4yLjgr2oMAAABKSURBVBjT1c+3DcAwEMBAfpAVHH//Ze1CECBt4CvZEVDJ0WW5HCiWnM5TO0Ark6rIxmQTgkX8Ka1Dj3A2Jqb4bonhtsJHJQZReAFBxgNtCIJBxQAAAABJRU5ErkJggg==);
+  /* background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAMAAABhEH5lAAAANlBMVEUAAADQ0NDQ0NDQ0NDJycnQ0NDQ0NDQ0NDQ0NDR0dHR0dHQ0NDQ0NDQ0NDQ0NDR0dHT09PQ0NBzSEtZAAAAEXRSTlMA23a3CTEp98KxqcfFgn4yLjgr2oMAAABKSURBVBjT1c+3DcAwEMBAfpAVHH//Ze1CECBt4CvZEVDJ0WW5HCiWnM5TO0Ark6rIxmQTgkX8Ka1Dj3A2Jqb4bonhtsJHJQZReAFBxgNtCIJBxQAAAABJRU5ErkJggg==);
   background-repeat: no-repeat;
   background-position: left 3rpx;
-  background-size: 36rpx 36rpx;
+  background-size: 36rpx 36rpx; */
 }
-.radio-group > .radio > radio:checked + text {
+.radio-group > .radio > text {
+  margin-left: 14rpx;
+  padding-top: 4rpx;
+}
+/* .radio-group > .radio > radio:checked + text {
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABIAAAASCAMAAABhEH5lAAAAS1BMVEUAAABlrW9lrW9lrW9krHBlrW9lrW9lrW9jrXFlrW9krm9lrm5lsHBlrW9lrW9lrm9krW9lrW5lrW9lrW5lrW9jrHFnrW9gn2BlrW+9kvsmAAAAGHRSTlMAre3yHfltZySGX0YY9eTVy7u0pHxNPghn0OjIAAAAbElEQVQY023QSQ6EMAxE0XIGCEM3M9T9T4olEJEDf2HJb2cDQRyfnCSVCzIGCIsEviQPs8ZBhyG3VwWNvYqh5VC5af5Ta1DzobafGFuVTLFDl1Axk9oGrDTEX93Qku3roPfZ7+ckIIjP4CXgBBUkGYTmeutxAAAAAElFTkSuQmCC);
-}
+} */
 
 .result {
   padding: 40rpx;

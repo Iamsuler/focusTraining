@@ -17,5 +17,23 @@ Page({
   },
   onUnload:function(){
     //监听页面卸载
+  },
+  formSubmit (event) {
+    console.log(event)
+
+    let object = event.detail.value;
+
+    for (const key in object) {
+      if (object.hasOwnProperty(key)) {
+        if (!object[key]) {
+          console.log(key)
+          wx.showToast({
+            title: '请认真填写全部问题',
+            icon: 'none'
+          })
+          break;
+        }
+      }
+    }
   }
 })

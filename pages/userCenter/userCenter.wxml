@@ -2,9 +2,9 @@
   <view class="head-wrap">
     <view class="user-wrap">
       <view class="avatar">
-        <image mode="aspectFit" src="/images/touxiang.png"></image>
+        <image mode="aspectFit" src="{{userInfo.avatarUrl}}"></image>
       </view>
-      <text>蓝色五花肉</text>
+      <text>{{ userInfo.nickName }}</text>
     </view>
     <view class="count-all">
       <view class="count-all-item">
