@@ -73,7 +73,7 @@ Page({
     isAbandon: false,
 
     resultSuccess: false,
-    resultFail: true,
+    resultFail: false,
     
     plainTime: 10,
     realTime: 0,
