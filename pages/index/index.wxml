@@ -44,7 +44,7 @@
         <cover-view class="modal-wrap modal-fail">
           <cover-view class="title">晒战绩</cover-view>
           <cover-view class="result">失败</cover-view>
-          <cover-image class="icon-result" src="/images/icon_smile.png"></cover-image>
+          <cover-image class="icon-result" src="/images/icon_sad.png"></cover-image>
           <cover-view class="result-message">计划专注{{plainTime}}分钟，结果{{realTime}}分钟\n就废了，好丧啊！</cover-view>
           <cover-view bindtap="handleShare" class="btn btn-cover">找朋友们鼓励我
             <button class="btn-cover-inner" open-type="share"></button>

@@ -99,16 +99,19 @@ Page({
 
   },
   onShareAppMessage () {
+    console.log('onShareAppMessage')
     return {
       title: '自定义转发标题哈哈',
       path: "pages/index/index"
     }
   },
   handleShare () {
-    console.log('showShareMenu')
-    wx.showShareMenu({
-      withShareTicket: true
-    })
+    // console.log('showShareMenu')
+    // wx.showShareMenu({
+    //   withShareTicket: true
+    // })
+    console.log('handleShare')
+    this.onShareAppMessage();
   },
   //事件处理函数
   bindViewTap: function () {
@@ -172,8 +175,6 @@ Page({
         remainDays = Math.floor(remainTime / (24 * 60 * 60)),
         hour = Math.floor(remainTime % (24 * 60 * 60) / (60 * 60)),
         minute = Math.ceil(remainTime % (24 * 60 * 60) % (60 * 60) / 60);
-    
-    console.log(remainDays, hour, minute);
 
     hour = hour < 10 ? `0${hour}` : hour;
     minute = minute < 10 ? `0${minute}` : minute;
@@ -263,7 +264,7 @@ Page({
     }
 
     context.rotate(endAngle * 2 * Math.PI);
-    context.drawImage('/images/icon_pointer.svg',-120,-120);
+    context.drawImage('/images/icon_pointer.png',-120,-120, 240, 240);
     context.restore();
 
     context.translate(-120,-120);
@@ -424,7 +425,6 @@ Page({
       if (focusTime !== realTime) {
         realTime = focusTime;
 
-        console.log(realTime)
         this.setData({
           realTime: realTime
         })
@@ -483,9 +483,6 @@ Page({
     this.setData({
       isAbandon: isAbandon
     })
-
-
-    this.initCanvas();
   },
   confirmAbandon () {
     let timeStr = this.data.plainTime < 10 ? '0' + this.data.plainTime + ':00' : this.data.plainTime + ':00';

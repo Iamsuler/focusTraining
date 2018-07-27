@@ -132,6 +132,7 @@ cover-view {
   border-color: #fff;
 }
 .btn-cover-inner {
+  display: none;
   position: absolute;
   width: 100%;
   height: 100%;
