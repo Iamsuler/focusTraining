@@ -12,17 +12,27 @@
     <view class="canvas-wrap {{curTabIndex == 1 ? 'active' : ''}}">
       <view class="clock-wrap" hidden="{{isCountDown}}">
         <canvas bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd" style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="firstCanvas"></canvas>
-        <button class="btn-begin btn btn-prime" bindtap="startCountDown">开始</button>
+        <view class="btn-wrap btn-begin">
+          <button type="primary"  bindtap="startCountDown">开始</button>
+        </view>
       </view>
       <view class="count-wrap" hidden="{{!isCountDown}}">
         <canvas style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="countDown"></canvas>
         <view hidden="{{isAbandon}}">
-          <button bindtap="handleAbandon" data-type="1" class="btn btn-prime-clear">放弃</button>
+          <view class="btn-wrap">
+            <button plain="true" type="primary" bindtap="handleAbandon" data-type="1">放弃</button>
+          </view>
         </view>
         <view hidden="{{!isAbandon}}">
-          <button bindtap="handleAbandon" data-type="2" class="btn btn-prime-clear">二思</button>
-          <button bindtap="handleAbandon" data-type="2" class="btn btn-prime-clear">三思</button>
-          <button bindtap="confirmAbandon" class="btn btn-prime-clear">确认放弃</button>
+          <view class="btn-wrap">
+            <button plain="true" type="primary" bindtap="handleAbandon" data-type="2">二思</button>
+          </view>
+          <view class="btn-wrap">
+            <button plain="true" type="primary" bindtap="handleAbandon" data-type="2">三思</button>
+          </view>
+          <view class="btn-wrap">
+            <button plain="true" type="primary" bindtap="confirmAbandon">确认放弃</button>
+          </view>
         </view>
       </view>
       <navigator hidden="{{curTabIndex != 1}}" class="btn-user" url="/pages/userCenter/userCenter">
@@ -44,10 +54,14 @@
         <cover-view class="modal-wrap modal-fail">
           <cover-view class="title">晒战绩</cover-view>
           <cover-view class="result">失败</cover-view>
-          <cover-image class="icon-result" src="/images/icon_sad.png"></cover-image>
+          <cover-view class="icon-result-wrap">
+            <cover-image class="icon-result" src="/images/icon_sad.png"></cover-image>
+          </cover-view>
           <cover-view class="result-message">计划专注{{plainTime}}分钟，结果{{realTime}}分钟\n就废了，好丧啊！</cover-view>
-          <cover-view bindtap="handleShare" class="btn btn-cover">找朋友们鼓励我
-            <button class="btn-cover-inner" open-type="share"></button>
+          <!-- <cover-view bindtap="handleShare" class="btn btn-cover">找朋友们鼓励我 -->
+          <!-- </cover-view> -->
+          <cover-view class="btn-cover-wrap">找朋友们鼓励我
+            <button hover-class="none" plain="true" class="btn-cover" open-type="share">我</button>
           </cover-view>
           <cover-image class="icon-cancle" bindtap="closeModal" data-type="fail" src="/images/icon_cancle.png"></cover-image>
         </cover-view>

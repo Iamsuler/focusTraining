@@ -14,31 +14,42 @@ view, text, button {
   background-color: transparent;
   opacity: 1;
 }
-.btn {
-  display: block;
+.btn-wrap {
+  /* display: block; */
   width: 240rpx;
   height: 88rpx;
-  line-height: 84rpx;
+  /* line-height: 84rpx; */
   margin: 0 auto;
-  border: 2rpx solid transparent;
+  /* border: 2rpx solid transparent;
   border-radius: 20rpx;
   text-align: center;
   color: #fff;
-  background-color: #fff;
-}
-.btn:after {
-  border: none;
+  background-color: #fff; */
 }
 
-.btn-prime {
+button {
+  border-radius: 20rpx;
+}
+button[type=primary] {
   background-color: #5C9965;
   border-color: #5C9965;
 }
 
-.btn-prime-clear {
+button[type=primary][plain] {
+  color: #5C9965;
+  border-color: #5C9965;
+  background-color: transparent;
+}
+
+/* .btn-prime {
+  background-color: #5C9965;
+  border-color: #5C9965;
+} */
+
+/* .btn-prime-clear {
   border-color: #5C9965;
   color: #5C9965;
-}
+} */
 
 radio .wx-radio-input{
   border-radius: 10rpx;
