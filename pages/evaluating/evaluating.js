@@ -82,13 +82,26 @@ Page({
     app.http.post('/api/q_and_a/save_train', params, res => {
       if (res.code === 0) {
         let data = res.data
+        let userScore = data.right_ratio * 100
+        let userType = ''
+        if (userScore <= 40) {
+          userType = '病在骨髓'
+        } else if (userScore <= 60) {
+          userType = '病在肠胃'
+        } else if (userScore <= 80) {
+          userType = '病在肌肤'
+        } else if (userScore < 100) {
+          userType = '病在腠理'
+        } else if (userScore === 100) {
+          userType = '寡人无疾'
+        }
         this.setData({
           rightQuestionCount: data.right_count,
           errorQuestionCount: data.error_count,
           allQustionCount: data.questions_count,
-          userScore: data.right_ratio * 100,
-          exceedRatio: data.chaoguonv * 100,
-          userType: '',
+          userScore: userScore,
+          exceedRatio: data.chaoguonv.toFixed(4) * 100,
+          userType: userType,
           isResult: true
         })
       } else {
