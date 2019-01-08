@@ -128,7 +128,7 @@ cover-view {
   font-size: 34rpx;
   height: 96rpx;
   line-height: 48rpx;
-  margin: 80rpx auto 110rpx;
+  margin: 80rpx auto 100rpx;
   white-space: normal;
 }
 .btn-cover-inner,
@@ -153,6 +153,7 @@ cover-view {
   height: 88rpx;
   line-height: 88rpx;
   border: 1px solid #fff;
+  border-radius: 20rpx;
   margin: 0 auto;
 }
 /* .btn-cover-inner {

@@ -1,6 +1,6 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="userinfo">
+  <view class="userinfo" hidden="true">
     <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
   </view>
   <view class="navbar">
@@ -13,7 +13,7 @@
       <view class="clock-wrap" hidden="{{isCountDown}}">
         <canvas bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd" style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="firstCanvas"></canvas>
         <view class="btn-wrap btn-begin">
-          <button type="primary"  bindtap="startCountDown">开始</button>
+          <button type="primary"  bindtap="createCountDown">开始</button>
         </view>
       </view>
       <view class="count-wrap" hidden="{{!isCountDown}}">
@@ -42,10 +42,12 @@
         <cover-view class="modal-wrap modal-success">
           <cover-view class="title">晒战绩</cover-view>
           <cover-view class="result">成功</cover-view>
-          <cover-image class="icon-result" src="/images/icon_smile.png"></cover-image>
+          <cover-view class="icon-result-wrap">
+            <cover-image class="icon-result" src="/images/icon_smile.png"></cover-image>
+          </cover-view>
           <cover-view class="result-message">计划专注{{plainTime}}分钟，结果一转眼\n就完成，好开心啊！</cover-view>
-          <cover-view bindtap="handleShare" class="btn btn-cover">找朋友们挑战我
-            <button class="btn-cover-inner" open-type="share"></button>
+          <cover-view class="btn-cover-wrap">找朋友们挑战我
+            <button hover-class="none" plain="true" class="btn-cover" open-type="share">我</button>
           </cover-view>
           <cover-image class="icon-cancle" bindtap="closeModal" data-type="success" src="/images/icon_cancle.png"></cover-image>
         </cover-view>
@@ -71,21 +73,21 @@
       <view class="count-all-wrap">
         <view class="count-all">
           <view class="count-all-item">
-            <text class="count">2</text>
+            <text class="count">{{ focusResultDay.count }}</text>
             <text class="desc">今日专注次数</text>
           </view>
           <view class="count-all-item">
-            <text class="count">128</text>
+            <text class="count">{{ focusResultWeek.count }}</text>
             <text class="desc">累计专注次数</text>
           </view>
         </view>
         <view class="count-all">
           <view class="count-all-item">
-            <view class="count">60<text class="subup">min</text></view>
+            <view class="count">{{ focusResultDay.time }}<text class="subup">min</text></view>
             <text class="desc">今日专注时长</text>
           </view>
           <view class="count-all-item">
-            <view class="count">67.5<text class="subup">h</text></view>
+            <view class="count">{{ focusResultWeek.time }}<text class="subup">h</text></view>
             <text class="desc">累计专注时长</text>
           </view>
         </view>
@@ -94,7 +96,7 @@
       <view class="count-week">
         <view class="count-title">
           <text>最近一周完成</text>
-          <text>13次专注</text>
+          <text>{{ focusResultWeek.count }}次专注</text>
         </view>
         <view class="week-canvas">
           <canvas style="width: 315px; height: 130px;" canvas-id="weekResult"></canvas>
@@ -104,23 +106,22 @@
       <view class="time-distribute">
         <view class="count-title">
           <text>最近一周完成</text>
-          <text>13次专注</text>
         </view>
         <view class="count-time">
           <view class="count-time-item">
-            <text class="count-time-percent">上午：52%</text>
+            <text class="count-time-percent">上午：{{ weekCountRatio.time6_11 }}%</text>
             <text class="time-range">(06:00～12:00)</text>
           </view>
           <view class="count-time-item">
-            <text class="count-time-percent">下午：52%</text>
+            <text class="count-time-percent">下午：{{ weekCountRatio.time12_17 }}%</text>
             <text class="time-range">(12:00～18:00)</text>
           </view>
           <view class="count-time-item">
-            <text class="count-time-percent">晚上：52%</text>
+            <text class="count-time-percent">晚上：{{ weekCountRatio.time18_23 }}%</text>
             <text class="time-range">(18:00～00:00)</text>
           </view>
           <view class="count-time-item">
-            <text class="count-time-percent">凌晨：52%</text>
+            <text class="count-time-percent">凌晨：{{ weekCountRatio.time0_5 }}%</text>
             <text class="time-range">(00:00～06:00)</text>
           </view>
         </view>
@@ -140,93 +141,22 @@
       </view>
       <view class="h20"></view>
       <view class="rank-list">
-        <view class="rank-item">
-          <image src="/images/touxiang.png"></image>
+        <view
+          class="rank-item"
+          wx:for="{{ sortList }}"
+          wx:key="id"
+          >
+          <image src="{{ item.avatar }}"></image>
           <view class="user">
-            <text class="name">张曼玉</text>
+            <text class="name">{{ item.nickname }}</text>
             <view>
-              <text class="icon-total-success">12</text>
-              <text class="icon-total-fail">12</text>
-              <text class="icon-total">12</text>
+              <text class="icon-total-success">{{ item.task_success_count }}</text>
+              <text class="icon-total-fail">{{ item.task_fail_count }}</text>
+              <text class="icon-total">{{ item.task_all_count }}</text>
             </view>
           </view>
           <view class="number">
-            <text class="icon-number">1</text>
-            <text>排名</text>
-          </view>
-        </view>
-        <view class="rank-item">
-          <image src="/images/touxiang.png"></image>
-          <view class="user">
-            <text class="name">张曼玉</text>
-            <view>
-              <text class="icon-total-success">12</text>
-              <text class="icon-total-fail">12</text>
-              <text class="icon-total">12</text>
-            </view>
-          </view>
-          <view class="number">
-            <text class="icon-number">1</text>
-            <text>排名</text>
-          </view>
-        </view>
-        <view class="rank-item">
-          <image src="/images/touxiang.png"></image>
-          <view class="user">
-            <text class="name">张曼玉</text>
-            <view>
-              <text class="icon-total-success">12</text>
-              <text class="icon-total-fail">12</text>
-              <text class="icon-total">12</text>
-            </view>
-          </view>
-          <view class="number">
-            <text class="icon-number">1</text>
-            <text>排名</text>
-          </view>
-        </view>
-        <view class="rank-item">
-          <image src="/images/touxiang.png"></image>
-          <view class="user">
-            <text class="name">张曼玉</text>
-            <view>
-              <text class="icon-total-success">12</text>
-              <text class="icon-total-fail">12</text>
-              <text class="icon-total">12</text>
-            </view>
-          </view>
-          <view class="number">
-            <text class="icon-number">1</text>
-            <text>排名</text>
-          </view>
-        </view>
-        <view class="rank-item">
-          <image src="/images/touxiang.png"></image>
-          <view class="user">
-            <text class="name">张曼玉</text>
-            <view>
-              <text class="icon-total-success">12</text>
-              <text class="icon-total-fail">12</text>
-              <text class="icon-total">12</text>
-            </view>
-          </view>
-          <view class="number">
-            <text class="icon-number">1</text>
-            <text>排名</text>
-          </view>
-        </view>
-        <view class="rank-item">
-          <image src="/images/touxiang.png"></image>
-          <view class="user">
-            <text class="name">张曼玉</text>
-            <view>
-              <text class="icon-total-success">12</text>
-              <text class="icon-total-fail">12</text>
-              <text class="icon-total">12</text>
-            </view>
-          </view>
-          <view class="number">
-            <text class="icon-number">1</text>
+            <text class="icon-number">{{ index + 1 }}</text>
             <text>排名</text>
           </view>
         </view>

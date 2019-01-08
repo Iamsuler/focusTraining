@@ -4,71 +4,24 @@
     <view class="desc">你是否每年都替自己定下大的计划，如减肥、储钱旅行…又是否每每能坚持到底？抑或多是半途而废？请做以下的心理测验。</view>
     <view class="question-list">
       <form bindsubmit="formSubmit">
-        <view class="question-item">
-          <view class="topic">1、你正在朋友家中，茶几上放着一盒你爱吃的巧克力，但你的朋友无意给你吃，当她离开房间时，你会</view>
-          <radio-group class="radio-group" name="radio1">
-            <label class="radio">
-              <radio value="B" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="C" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="D" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="A" />
-              <text>对自己说：“什么巧克力？我很快就有一顿丰富的晚餐”</text>
+        <view
+          class="question-item"
+          wx:for="{{ questionList }}"
+          wx:key="id"
+          >
+          <view class="topic">{{ index + 1 }}、{{ item.title }}</view>
+          <radio-group class="radio-group" name="{{item.id}}">
+            <label
+              class="radio"
+              wx:for="{{ item.options }}"
+              wx:key="value"
+              >
+              <radio value="{{ item.value }}" />
+              <text>{{ item.name }}</text>
             </label>
           </radio-group>
         </view>
-        <view class="question-item">
-          <view class="topic">1、你正在朋友家中，茶几上放着一盒你爱吃的巧克力，但你的朋友无意给你吃，当她离开房间时，你会</view>
-          <radio-group class="radio-group" name="radio2">
-            <label class="radio">
-              <radio value="B" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="C" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="D" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="A" />
-              <text>对自己说：“什么巧克力？我很快就有一顿丰富的晚餐”</text>
-            </label>
-          </radio-group>
-        </view>
-        <view class="question-item">
-          <view class="topic">1、你正在朋友家中，茶几上放着一盒你爱吃的巧克力，但你的朋友无意给你吃，当她离开房间时，你会</view>
-          <radio-group class="radio-group" name="radio3">
-            <label class="radio">
-              <radio value="B" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="C" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="D" />
-              <text>立即吞下一块巧克力，再抓一把塞进口袋里</text>
-            </label>
-            <label class="radio">
-              <radio value="A" />
-              <text>对自己说：“什么巧克力？我很快就有一顿丰富的晚餐”</text>
-            </label>
-          </radio-group>
-        </view>
-
-        <button formType="submit" class="btn btn-prime">提交</button>
+        <button formType="submit"  type="primary" class="btn btn-prime">提交</button>
       </form>
     </view>
   </view>
@@ -78,29 +31,29 @@
         <text>自制力测试结果</text>
       </view>
       <view class="score">
-        <text>85分</text>
-        <text>超过了92%的用户</text>
+        <text>{{ userScore }}分</text>
+        <text>超过了{{ exceedRatio }}%的用户</text>
       </view>
       <view class="detail">
         <view class="detail-item">
           <view>共回答：</view>
-          <view>30 题</view>
+          <view>{{ allQustionCount }} 题</view>
         </view>
         <view class="detail-item">
           <view>正确：</view>
           <view>
-            <text class="right-num">30</text> 题</view>
+            <text class="right-num">{{ rightQuestionCount }}</text> 题</view>
         </view>
         <view class="detail-item">
           <view>错误：</view>
           <view>
-            <text class="error-num">30</text> 题</view>
+            <text class="error-num">{{ errorQuestionCount }}</text> 题</view>
         </view>
       </view>
       <view class="explain">
-        类型：拖延症重度患者
+        类型：{{ userType }}
       </view>
     </view>
-    <button class="btn btn-prime" open-type="share">找朋友们挑战我</button>
+    <button class="btn btn-prime" type="primary" open-type="share">找朋友们挑战我</button>
   </view>
 </view>

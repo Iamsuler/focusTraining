@@ -1,7 +1,6 @@
 //index.js
 //获取应用实例
 const app = getApp();
-
 const throttle = function(func, wait, options) {
   /* options的默认值
    *  表示首次调用返回值方法时，会马上调用func；否则仅会记录当前时刻，当第二次调用的时间间隔超过wait时，才调用func。
@@ -96,21 +95,55 @@ Page({
       y1: 0,
     },
     inRegion: false,
+    // sort排行
+    sortList: [],
+    // 统计
+    focusResultDay: {
+      count: 0,
+      time: 0
+    },
+    focusResultWeek: {
+      count: 0,
+      time: 0
+    },
+    weekCountRatio: {
+      time6_11: 0,
+      time12_17: 0,
+      time18_23: 0,
+      time0_5: 0
+    },
+    chartBarResult: [{
+      date: '',
+      count: 0
+    }, {
+      date: '',
+      count: 0
+    }, {
+      date: '',
+      count: 0
+    }, {
+      date: '',
+      count: 0
+    }, {
+      date: '',
+      count: 0
+    }, {
+      date: '',
+      count: 0
+    }, {
+      date: '',
+      count: 0
+    }],
+    taskId: null
 
   },
   onShareAppMessage () {
-    console.log('onShareAppMessage')
     return {
       title: '自定义转发标题哈哈',
       path: "pages/index/index"
     }
   },
   handleShare () {
-    // console.log('showShareMenu')
-    // wx.showShareMenu({
-    //   withShareTicket: true
-    // })
-    console.log('handleShare')
     this.onShareAppMessage();
   },
   //事件处理函数
@@ -290,7 +323,6 @@ Page({
     // context.beginPath();
     // let d = this.calOffset(endAngle * 2 * Math.PI, this.data.canvasParams.originR);
 
-    // console.log(d);
 
     // context.arc(this.data.canvasParams.originX + d.x, this.data.canvasParams.originY + d.y, this.data.canvasParams.ballR, 0, 2 * Math.PI, true);
     // context.fill();
@@ -333,7 +365,6 @@ Page({
   handleTouchStart (event) {
     let curX = event.touches[0].x - this.data.canvasParams.originX, curY = event.touches[0].y - this.data.canvasParams.originY;
 
-    console.log(curX, curY)
     //计算弧度
     // let rad = Math.atan2(this.data.canvasParams.originX - curX, curY - this.data.canvasParams.originY);
     let ballRegion = this.data.ballRegion;
@@ -409,6 +440,21 @@ Page({
 
     this.calRegion(endAngle);
   },
+  createCountDown () {
+    let params = {
+      wish_time: this.data.plainTime
+    }
+    app.http.post('/api/create_task', params, res => {
+      if (res.code === 0) {
+        this.setData({
+          taskId: res.data.id
+        })
+        this.startCountDown()
+      } else {
+        this.showToast(res.message)
+      }
+    })
+  },
   startCountDown () {
 
     let startTimes = this.data.plainTime * 60, PLAIN_TIME = startTimes, curAngle = 1;
@@ -429,17 +475,18 @@ Page({
           realTime: realTime
         })
       }
-
-      this.animationDraw(curAngle, endAngle, timeStr);
+      this.drawCountDown(endAngle, timeStr)
+      // this.animationDraw(curAngle, endAngle, timeStr);
 
       curAngle = endAngle;
       
       if (endAngle === 0) {
         clearInterval(countDownTimer)
 
-        setTimeout(() => {
-          this.trainingSuccess();
-        }, 1000)
+        // setTimeout(() => {
+        //   this.trainingSuccess();
+        // }, 1000)
+        this.updateTask(1)
       }
 
     }, 1000)
@@ -478,6 +525,26 @@ Page({
 
     }, 20)
   },
+  updateTask (status) {
+    let taskId = this.data.taskId
+    let params = {
+      status: status
+    }
+    app.http.post(`/api/update_task/${taskId}`, params, res => {
+      if (res.code === 0) {
+        if (status === 1) {
+          this.trainingSuccess()
+        } else if (status === -1) {
+          this.setData({
+            isCountDown: false,
+            resultFail: true
+          })
+        }
+      } else {
+        this.showToast(res.message)
+      }
+    })
+  },
   handleAbandon (event) {
     let isAbandon = event.currentTarget.dataset.type === '1' ? true : false;
     this.setData({
@@ -486,14 +553,10 @@ Page({
   },
   confirmAbandon () {
     let timeStr = this.data.plainTime < 10 ? '0' + this.data.plainTime + ':00' : this.data.plainTime + ':00';
-
     clearInterval(countDownTimer)
 
     this.drawCountDown(1, timeStr)
-    this.setData({
-      isCountDown: false,
-      resultFail: true
-    })
+    this.updateTask(-1)
   },
   closeModal (event) {
     let type = event.currentTarget.dataset.type;
@@ -507,6 +570,117 @@ Page({
       })
     }
   },
+  showToast (msg) {
+    wx.showToast({
+      title: msg,
+      icon: 'none',
+    })
+  },
+  getSort () {
+    let params = {
+      opr: 'get-weekday'
+    }
+    app.http.get('/api/sort', params, res => {
+      let code = res.code
+      if (code === 0) {
+        let data = res.data.data
+        let list = []
+        data.forEach(item => {
+          list.push({
+            id: item.id,
+            avatar: item.avatar,
+            nickname: item.nickname,
+            task_success_count: item.task_success_count,
+            task_fail_count: item.task_fail_count,
+            task_all_count: item.task_success_count + item.task_fail_count
+          })
+        })
+        this.setData({
+          sortList: list
+        })
+      } else {
+        this.showToast(res.message)
+      }
+    })
+  },
+  getAllCount (opr = 'get-weekday') {
+    let params = {
+      opr: opr
+    }
+    app.http.get('/api/tongji/allCount', params, res => {
+      let code = res.code
+      if (code === 0) {
+        let data = res.data
+        let task_all_count = data.task_fail_count + data.task_success_count
+        if (opr === 'get-weekday') {
+          let time = (data.task_all_complete_time_sum / 60).toFixed(1)
+          this.setData({
+            focusResultWeek: {
+              count: task_all_count,
+              time: time
+            }
+          })
+        } else if (opr === 'get-today') {
+          this.setData({
+            focusResultDay: {
+              count: task_all_count,
+              time: data.task_all_complete_time_sum || 0
+            }
+          })
+        }
+      } else {
+        this.showToast(res.message)
+      }
+    })
+  },
+  getTongjiByDay () {
+    let params = {
+      group_type: 'week',
+      day_length: 7,
+      only_success: 1
+    }
+    app.http.get('/api/tongji/byDay', params, res => {
+      if (res.code === 0) {
+        let data = res.data.groupData
+        let list = []
+        data.forEach(item => {
+          let date = item.group_data.split('-')
+          list.push({
+            date: `${date[1]}-${date[2]}`,
+            count: item.task_count
+          })
+        })
+        this.setData({
+          chartBarResult: list
+        })
+        this.drawWeekResult()
+      } else {
+        this.showToast(res.message)
+      }
+    })
+  },
+  getTongjiByTime () {
+    let params = {
+      opr: 'get-weekday'
+    }
+    app.http.get('/api/tongji/byTime', params, res => {
+      if (res.code === 0) {
+        let times_group = res.data.times_group
+        let obj = {}
+        for (const key in times_group) {
+          if (times_group.hasOwnProperty(key)) {
+            const item = times_group[key];
+            obj[key] = item.ratio * 100
+          }
+        }
+        this.setData({
+          weekCountRatio: obj
+        })
+      } else {
+        this.showToast(res.message)
+      }
+    })
+  },
   switchTab (event) {
     let index = event.currentTarget.dataset.index;
 
@@ -516,53 +690,30 @@ Page({
 
     if (index === '3') {
       this.countDownRemainTime()
-
       this.data.remainTimer = setInterval(() => {
         this.countDownRemainTime()
       }, 1000);
+      this.getSort()
     } else {
-
       clearInterval(this.data.remainTimer);
+      if (index === '2') {
+        this.getAllCount('get-weekday')
+        this.getAllCount('get-today')
+        this.getTongjiByDay()
+        this.getTongjiByTime()
+      }
     }
   },
   drawWeekResult () {
-    let result = [
-      {
-        data: '05-25',
-        time: 3
-      },
-      {
-        data: '05-26',
-        time: 4
-      },
-      {
-        data: '05-27',
-        time: 0
-      },
-      {
-        data: '05-28',
-        time: 1
-      },
-      {
-        data: '05-29',
-        time: 3
-      },
-      {
-        data: '05-30',
-        time: 2
-      },
-      {
-        data: '05-31',
-        time: 6
-      },
-    ]
+    let result = this.data.chartBarResult
+    let length = result.length
 
     // 最大值
-    for (var i = 0, maxValue = Number.MIN_VALUE; i < 7; i++) {
-      parseInt(result[i].time) > maxValue && (maxValue = result[i].time);
+    for (var i = 0, maxValue = 0; i < length; i++) {
+      parseInt(result[i].count) > maxValue && (maxValue = result[i].count);
     }
 
-    let ratioH = (80 / maxValue).toFixed(4);
+    let ratioH = maxValue > 0 ? (80 / maxValue).toFixed(4) : 0
 
     let ctx = wx.createCanvasContext('weekResult');
 
@@ -571,23 +722,23 @@ Page({
     ctx.textBaseline = "middle";
     ctx.font="11px Arial";
 
-    for (let index = 0 ; index < 7; index++) {
+    for (let index = 0 ; index < length; index++) {
       const item = result[index];
       let itemX = 16 + index * 47;
 
 
       ctx.fillStyle = '#d2d2d2';
-      ctx.fillText(item.data, itemX, 120);
+      ctx.fillText(item.date, itemX, 120);
 
       ctx.fillStyle = '#F5F5F5';
       ctx.fillRect(itemX - 8, 25, 16, 80);
 
       ctx.fillStyle = '#65AD6F';
-      let itemY = 105 - Math.ceil(item.time * ratioH);
-      ctx.fillRect(itemX - 8, itemY, 16, Math.ceil(item.time * ratioH));
+      let itemY = 105 - Math.ceil(item.count * ratioH);
+      ctx.fillRect(itemX - 8, itemY, 16, Math.ceil(item.count * ratioH));
 
       ctx.fillStyle = '#d2d2d2';
-      ctx.fillText(item.time, itemX, itemY - 10);
+      ctx.fillText(item.count, itemX, itemY - 10);
     }
 
     // ctx.fillStyle="#FF0000";
