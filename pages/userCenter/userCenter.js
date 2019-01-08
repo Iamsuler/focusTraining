@@ -1,16 +1,14 @@
-import http from "../../utils/http";
-
 const app = getApp();
 
 Page({
   data:{
     //页面数据初始化
     userInfo: null,
-    focusCountToDay: 0,
-    focusCountWeek: 0
+    focusCount: 0,
+    focusTime: 0
     
   },
-  getAllCount (opr = 'get-weekday') {
+  getAllCount (opr = null) {
     let params = {
       opr: opr
     }
@@ -18,15 +16,12 @@ Page({
       let code = res.code
       if (code === 0) {
         let data = res.data
-        if (opr === 'get-weekday') {
-          this.setData({
-            focusCountWeek: data.tasks_all_count
-          })
-        } else if (opr === 'get-today') {
-          this.setData({
-            focusCountToDay: data.tasks_all_count
-          })
-        }
+        let time = (data.task_all_complete_time_sum / 60).toFixed(1)
+        let task_all_count = data.task_fail_count + data.task_success_count
+        this.setData({
+          focusCount: task_all_count,
+          focusTime: time
+        })
       } else {
         this.showToast(res.message)
       }
@@ -39,8 +34,7 @@ Page({
         userInfo: app.globalData.userInfo
       })
     }
-    this.getAllCount('get-weekday')
-    this.getAllCount('get-today')
+    this.getAllCount()
 
   },
   onReady:function(){

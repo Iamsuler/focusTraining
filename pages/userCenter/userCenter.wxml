@@ -8,12 +8,12 @@
     </view>
     <view class="count-all">
       <view class="count-all-item">
-        <text class="count">{{ focusCountToDay }}</text>
-        <text class="desc">今日专注次数</text>
+        <text class="count">{{ focusCount }}</text>
+        <text class="desc">累计次数</text>
       </view>
       <view class="count-all-item">
-        <text class="count">{{ focusCountWeek }}</text>
-        <text class="desc">累计专注次数</text>
+        <text class="count">{{ focusTime }}</text>
+        <text class="desc">累计小时</text>
       </view>
     </view>
   </view>

@@ -603,7 +603,7 @@ Page({
       }
     })
   },
-  getAllCount (opr = 'get-weekday') {
+  getAllCount (opr = null) {
     let params = {
       opr: opr
     }
