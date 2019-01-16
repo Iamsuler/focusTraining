@@ -1,8 +1,5 @@
 <!--index.wxml-->
 <view class="container">
-  <view class="userinfo" hidden="true">
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-  </view>
   <view class="navbar">
     <view bindtap="switchTab" data-index="1" class="{{curTabIndex == 1 ? 'active': ''}}"><text>计时</text></view>
     <view bindtap="switchTab" data-index="2" class="{{curTabIndex == 2 ? 'active': ''}}"><text>统计</text></view>
@@ -18,22 +15,11 @@
       </view>
       <view class="count-wrap" hidden="{{!isCountDown}}">
         <canvas style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="countDown"></canvas>
-        <view hidden="{{isAbandon}}">
-          <view class="btn-wrap">
-            <button plain="true" type="primary" bindtap="handleAbandon" data-type="1">放弃</button>
-          </view>
+        <!-- <view hidden="{{isAbandon}}"> -->
+        <view class="btn-wrap">
+          <button plain="true" type="primary" bindtap="handleAbandon">{{ abandonBtnTxt }}</button>
         </view>
-        <view hidden="{{!isAbandon}}">
-          <view class="btn-wrap">
-            <button plain="true" type="primary" bindtap="handleAbandon" data-type="2">二思</button>
-          </view>
-          <view class="btn-wrap">
-            <button plain="true" type="primary" bindtap="handleAbandon" data-type="2">三思</button>
-          </view>
-          <view class="btn-wrap">
-            <button plain="true" type="primary" bindtap="confirmAbandon">确认放弃</button>
-          </view>
-        </view>
+        <!-- </view> -->
       </view>
       <navigator hidden="{{curTabIndex != 1}}" class="btn-user" url="/pages/userCenter/userCenter">
         <image style="width: 64rpx; height: 64rpx;" src="/images/icon_user.svg" alt="个人中心"></image>
@@ -163,4 +149,13 @@
       </view>
     </view>
   </view>
+  <cover-view class="modal" wx:if="{{isNotAuthorization}}">
+    <cover-view class="modal-wrap modal-userinfo">
+      <cover-image class="modal-userinfo-logo" src="/images/logo.png"></cover-image>
+      <cover-view class="modal-userinfo-text">欢迎使用时间管理小程序</cover-view>
+      <cover-view>开始使用
+        <button class="btn-userinfo" type="primary" open-type="getUserInfo" bindgetuserinfo="getUserInfo">开始使用</button>
+      </cover-view>
+    </cover-view>
+  </cover-view>
 </view>

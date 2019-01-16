@@ -4,6 +4,8 @@ const http = {
     'Authorization': null
   },
   get: function (path, data, callback) {
+    let Authorization = wx.getStorageSync('Authorization') || null
+    Authorization = Authorization ? 'Bearer ' + Authorization : null
     wx.showLoading({
       title: '加载中'
     })
@@ -11,7 +13,9 @@ const http = {
       url: this.baseUrl + path,
       method: 'GET',
       data: data,
-      header: this.header,
+      header: {
+        'Authorization': Authorization
+      },
       success (res) {
         wx.hideLoading()
         return typeof callback === 'function' && callback(res.data)
@@ -27,6 +31,8 @@ const http = {
     })
   },
   post: function (path, data, callback) {
+    let Authorization = wx.getStorageSync('Authorization') || null
+    Authorization = Authorization ? 'Bearer ' + Authorization : null
     wx.showLoading({
       title: '加载中'
     })
@@ -34,7 +40,9 @@ const http = {
       url: this.baseUrl + path,
       method: 'POST',
       data: data,
-      header: this.header,
+      header: {
+        'Authorization': Authorization
+      },
       success (res) {
         wx.hideLoading()
         return typeof callback === 'function' && callback(res.data)

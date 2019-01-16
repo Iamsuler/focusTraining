@@ -50,9 +50,8 @@ let countDownTimer = null;
 
 Page({
   data: {
-    motto: 'Hello World',
+    isNotAuthorization: false,
     userInfo: {},
-    hasUserInfo: false,
     canIUse: wx.canIUse('button.open-type.getUserInfo'),
     curTabIndex: 1,
     canvasParams: {
@@ -69,7 +68,8 @@ Page({
     },
     times: 300,
     isCountDown: false,
-    isAbandon: false,
+    abandonBtnTxt: '放弃',
+    abandonStep: 1,
 
     resultSuccess: false,
     resultFail: false,
@@ -152,43 +152,47 @@ Page({
       url: '../logs/logs'
     })
   },
-  setUserStorage () {
-    wx.setStorage({
-      key: 'userInfo',
-      value: JSON.stringify(this.data.userInfo)
-    })
-    wx.setStorage({
-      key: 'hasUserInfo',
-      value: true
-    })
-  },
   onLoad: function () {
-    if (app.globalData.userInfo) {
-      this.setData({
-        userInfo: app.globalData.userInfo,
-        hasUserInfo: true
-      })
-    } else if (this.data.canIUse) {
-      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
-      // 所以此处加入 callback 以防止这种情况
-      app.userInfoReadyCallback = res => {
-        this.setData({
-          userInfo: res.userInfo,
-          hasUserInfo: true
-        })
-      }
-    } else {
-      // 在没有 open-type=getUserInfo 版本的兼容处理
-      wx.getUserInfo({
-        success: res => {
-          app.globalData.userInfo = res.userInfo
+    // 获取用户信息
+    wx.getSetting({
+      success: res => {
+        console.log(res)
+        if (res.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          app.wxlogin()
           this.setData({
-            userInfo: res.userInfo,
-            hasUserInfo: true
+            isNotAuthorization: false
+          })
+        } else {
+          this.setData({
+            isNotAuthorization: true
           })
         }
-      })
-    }
+      }
+    })
+    // if (app.globalData.userInfo) {
+    //   this.setData({
+    //     userInfo: app.globalData.userInfo
+    //   })
+    // } else if (this.data.canIUse) {
+    //   // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+    //   // 所以此处加入 callback 以防止这种情况
+    //   app.userInfoReadyCallback = res => {
+    //     this.setData({
+    //       userInfo: res.userInfo
+    //     })
+    //   }
+    // } else {
+    //   // 在没有 open-type=getUserInfo 版本的兼容处理
+    //   wx.getUserInfo({
+    //     success: res => {
+    //       app.globalData.userInfo = res.userInfo
+    //       this.setData({
+    //         userInfo: res.userInfo
+    //       })
+    //     }
+    //   })
+    // }
 
     this.initCanvas();
 
@@ -228,13 +232,6 @@ Page({
     this.drawCountDown(1, timeStr);
 
     this.calRegion(startAngle);
-  },
-  getUserInfo: function (e) {
-    app.globalData.userInfo = e.detail.userInfo
-    this.setData({
-      userInfo: e.detail.userInfo,
-      hasUserInfo: true
-    })
   },
   calOffset (r, d) {
     return {
@@ -500,7 +497,7 @@ Page({
       resultSuccess: true,
       isCountDown: false,
     })
-
+    this.setAbandonStep(1)
     this.initCanvas();
   },
   animationDraw(curAngle, endAngle, timeStr) {
@@ -545,11 +542,20 @@ Page({
       }
     })
   },
-  handleAbandon (event) {
-    let isAbandon = event.currentTarget.dataset.type === '1' ? true : false;
+  setAbandonStep (step) {
+    let list = ['', '放弃', '二思', '三思', '确认放弃' ]
     this.setData({
-      isAbandon: isAbandon
+      abandonStep: step,
+      abandonBtnTxt: list[step]
     })
+  },
+  handleAbandon () {
+    let abandonStep = this.data.abandonStep
+    if (abandonStep === 4) {
+      this.confirmAbandon()
+    } else {
+      this.setAbandonStep(abandonStep + 1)
+    }
   },
   confirmAbandon () {
     let timeStr = this.data.plainTime < 10 ? '0' + this.data.plainTime + ':00' : this.data.plainTime + ':00';
@@ -557,6 +563,7 @@ Page({
 
     this.drawCountDown(1, timeStr)
     this.updateTask(-1)
+    this.setAbandonStep(1)
   },
   closeModal (event) {
     let type = event.currentTarget.dataset.type;
@@ -746,5 +753,34 @@ Page({
 
     ctx.draw()
 
+  },
+  // getUserInfo
+  setUserStorage () {
+    wx.setStorage({
+      key: 'userInfo',
+      value: JSON.stringify(this.data.userInfo)
+    })
+  },
+  getUserInfo (e) {
+    if (e.detail.userInfo) {
+      //用户按了允许授权按钮
+      app.wxlogin()
+      this.setData({
+        isNotAuthorization: false
+      })
+    } else {
+      //用户按了拒绝按钮
+      wx.showModal({
+        title: '警告',
+        content: '您点击了拒绝授权，将无法进入小程序，请授权之后再进入!!!',
+        showCancel: false,
+        confirmText: '返回授权',
+        success: function (res) {
+          if (res.confirm) {
+            console.log('用户点击了“返回授权”')
+          }
+        }
+      })
+    }
   }
 })

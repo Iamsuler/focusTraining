@@ -89,7 +89,7 @@ cover-view {
   border-radius: 28rpx;
   text-align: center;
   padding: 60rpx 56rpx;
-  background-color: #f00;
+  background-color: #fff;
 }
 .icon-cancle {
   position: absolute;
@@ -131,8 +131,8 @@ cover-view {
   margin: 80rpx auto 100rpx;
   white-space: normal;
 }
-.btn-cover-inner,
-.btn-cover{
+.btn-cover-wrap .btn-cover-inner,
+.btn-cover-wrap .btn-cover{
   position: absolute;
   top: 0;
   left: 0;
@@ -143,8 +143,8 @@ cover-view {
   border-color: #fff!important;
   opacity: 0;
 }
-.wx-button-cover-view-inner,
-.wx-button-cover-view-wrapper {
+.btn-cover-wrap .wx-button-cover-view-inner,
+.btn-cover-wrap .wx-button-cover-view-wrapper {
   opacity: 0;
 }
 .btn-cover-wrap {
@@ -351,4 +351,17 @@ cover-view {
   line-height: 32rpx;
   font-size: 22rpx;
   color: rgba(0,0,0,0.30);
+}
+
+.modal-userinfo {
+  height: 600rpx;
+}
+.modal-userinfo-text {
+  margin: 50rpx 0 100rpx;
+  color: #333;
+}
+.modal-userinfo-logo {
+  width: 144rpx;
+  height: 144rpx;
+  margin: 0 auto;
 }
