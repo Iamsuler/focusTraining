@@ -7,7 +7,7 @@
   </view>
   <view class="pannel-wrap">
     <view class="canvas-wrap {{curTabIndex == 1 ? 'active' : ''}}">
-      <view class="clock-wrap" hidden="{{isCountDown}}">
+      <view class="clock-wrap" hidden="{{isCountDown || resultSuccess || resultFail}}">
         <canvas bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd" style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="firstCanvas"></canvas>
         <view class="btn-wrap btn-begin">
           <button type="primary"  bindtap="createCountDown">开始</button>
@@ -32,8 +32,8 @@
             <cover-image class="icon-result" src="/images/icon_smile.png"></cover-image>
           </cover-view>
           <cover-view class="result-message">计划专注{{plainTime}}分钟，结果一转眼\n就完成，好开心啊！</cover-view>
-          <cover-view class="btn-cover-wrap">找朋友们挑战我
-            <button hover-class="none" plain="true" class="btn-cover" open-type="share">我</button>
+          <cover-view class="btn-cover-wrap">
+            <button hover-class="none" plain="true" class="btn-cover" open-type="share">找朋友们挑战我</button>
           </cover-view>
           <cover-image class="icon-cancle" bindtap="closeModal" data-type="success" src="/images/icon_cancle.png"></cover-image>
         </cover-view>
@@ -46,10 +46,8 @@
             <cover-image class="icon-result" src="/images/icon_sad.png"></cover-image>
           </cover-view>
           <cover-view class="result-message">计划专注{{plainTime}}分钟，结果{{realTime}}分钟\n就废了，好丧啊！</cover-view>
-          <!-- <cover-view bindtap="handleShare" class="btn btn-cover">找朋友们鼓励我 -->
-          <!-- </cover-view> -->
-          <cover-view class="btn-cover-wrap">找朋友们鼓励我
-            <button hover-class="none" plain="true" class="btn-cover" open-type="share">我</button>
+          <cover-view class="btn-cover-wrap">
+            <button hover-class="none" plain="true" class="btn-cover" open-type="share">找朋友们鼓励我</button>
           </cover-view>
           <cover-image class="icon-cancle" bindtap="closeModal" data-type="fail" src="/images/icon_cancle.png"></cover-image>
         </cover-view>

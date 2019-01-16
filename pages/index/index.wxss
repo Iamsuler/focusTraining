@@ -56,7 +56,7 @@ cover-view {
 }
 
 .canvas-wrap {
-  margin-top: 160rpx;
+  margin-top: 140rpx;
 }
 
 .count-wrap > view,
@@ -131,29 +131,26 @@ cover-view {
   margin: 80rpx auto 100rpx;
   white-space: normal;
 }
-.btn-cover-wrap .btn-cover-inner,
 .btn-cover-wrap .btn-cover{
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 88rpx;
-  background-color: transparent!important;
-  color: #fff!important;
-  border-color: #fff!important;
-  opacity: 0;
+  /* background-color: transparent!important; */
+  color: #fff;
+  border-color: #fff;
+  overflow: hidden;
 }
-.btn-cover-wrap .wx-button-cover-view-inner,
-.btn-cover-wrap .wx-button-cover-view-wrapper {
-  opacity: 0;
+.btn-cover .wx-button-cover-view-wrapper {
+  height: 84rpx;
+  line-height: 84rpx;
+  border: none;
 }
 .btn-cover-wrap {
   position: relative;
   width: 300rpx;
-  height: 88rpx;
-  line-height: 88rpx;
-  border: 1px solid #fff;
-  border-radius: 20rpx;
+  height: 100rpx;
   margin: 0 auto;
 }
 /* .btn-cover-inner {
