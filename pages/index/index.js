@@ -99,12 +99,12 @@ Page({
     sortList: [],
     // 统计
     focusResultDay: {
-      count: 0,
-      time: 0
+      time: 0,
+      successCount: 0
     },
     focusResultWeek: {
-      count: 0,
-      time: 0
+      time: 0,
+      successCount: 0
     },
     weekCountRatio: {
       time6_11: 0,
@@ -153,23 +153,11 @@ Page({
     })
   },
   onLoad: function () {
-    // 获取用户信息
-    wx.getSetting({
-      success: res => {
-        console.log(res)
-        if (res.authSetting['scope.userInfo']) {
-          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-          app.wxlogin()
-          this.setData({
-            isNotAuthorization: false
-          })
-        } else {
-          this.setData({
-            isNotAuthorization: true
-          })
-        }
-      }
-    })
+    if (app.globalData.isNotAuthorization) {
+      this.setData({
+        isNotAuthorization: true
+      })
+    }
     // if (app.globalData.userInfo) {
     //   this.setData({
     //     userInfo: app.globalData.userInfo
@@ -205,7 +193,7 @@ Page({
         day = now.getDate(),
         nowDayOfWeek = now.getDay();
 
-    let lastDay = 6 - nowDayOfWeek,
+    let lastDay = 7 - nowDayOfWeek,
         last = new Date(year, month, day + lastDay, 23, 59, 59);
     
     let remainTime = (last - now) / 1000,
@@ -329,7 +317,6 @@ Page({
     context.draw()
   },
   drawCountDown (endAngle, timeStr) {
-
     let context = wx.createCanvasContext('countDown')
 
     // context.clearRect(0, 0, this.data.canvasParams.width, this.data.canvasParams.height)
@@ -355,7 +342,6 @@ Page({
     context.textBaseline = "middle";
     //计算数值的取值区间
     context.fillText(timeStr, this.data.canvasParams.originX, this.data.canvasParams.originY);
-
 
     context.draw()
   },
@@ -522,7 +508,7 @@ Page({
 
     }, 20)
   },
-  updateTask (status) {
+  updateTask (status, type) {
     let taskId = this.data.taskId
     let params = {
       status: status
@@ -532,9 +518,10 @@ Page({
         if (status === 1) {
           this.trainingSuccess()
         } else if (status === -1) {
+          let resultFail = type !== 'hide'
           this.setData({
             isCountDown: false,
-            resultFail: true
+            resultFail: resultFail
           })
         }
       } else {
@@ -557,13 +544,13 @@ Page({
       this.setAbandonStep(abandonStep + 1)
     }
   },
-  confirmAbandon () {
+  confirmAbandon (type) {
     let timeStr = this.data.plainTime < 10 ? '0' + this.data.plainTime + ':00' : this.data.plainTime + ':00';
     clearInterval(countDownTimer)
 
     this.drawCountDown(1, timeStr)
-    this.updateTask(-1)
     this.setAbandonStep(1)
+    this.updateTask(-1, type)
   },
   closeModal (event) {
     let type = event.currentTarget.dataset.type;
@@ -599,7 +586,7 @@ Page({
             nickname: item.nickname,
             task_success_count: item.task_success_count,
             task_fail_count: item.task_fail_count,
-            task_all_count: item.task_success_count + item.task_fail_count
+            task_success_complete_time_sum: item.task_success_complete_time_sum || 0
           })
         })
         this.setData({
@@ -618,20 +605,19 @@ Page({
       let code = res.code
       if (code === 0) {
         let data = res.data
-        let task_all_count = data.task_fail_count + data.task_success_count
         if (opr === 'get-weekday') {
-          let time = (data.task_all_complete_time_sum / 60).toFixed(1)
+          let time = (data.task_success_complete_time_sum / 60).toFixed(1)
           this.setData({
             focusResultWeek: {
-              count: task_all_count,
-              time: time
+              time: time,
+              successCount: data.task_success_count
             }
           })
         } else if (opr === 'get-today') {
           this.setData({
             focusResultDay: {
-              count: task_all_count,
-              time: data.task_all_complete_time_sum || 0
+              successCount: data.task_success_count,
+              time: data.task_success_complete_time_sum || 0
             }
           })
         }
@@ -641,12 +627,7 @@ Page({
     })
   },
   getTongjiByDay () {
-    let params = {
-      group_type: 'week',
-      day_length: 7,
-      only_success: 1
-    }
-    app.http.get('/api/tongji/byDay', params, res => {
+    app.http.get('/api/tongji/byDay', {}, res => {
       if (res.code === 0) {
         let data = res.data.groupData
         let list = []
@@ -782,5 +763,16 @@ Page({
         }
       })
     }
+  },
+  onShow () {
+    wx.setKeepScreenOn({
+      keepScreenOn: true
+    })
+  },
+  onHide () {
+    wx.setKeepScreenOn({
+      keepScreenOn: false
+    })
+    this.confirmAbandon('hide')
   }
 })

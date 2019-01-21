@@ -57,9 +57,22 @@ App({
     // var logs = wx.getStorageSync('logs') || []
     // logs.unshift(Date.now())
     // wx.setStorageSync('logs', logs)
+
+    // 获取用户信息
+    wx.getSetting({
+      success: res => {
+        if (res.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          this.wxlogin()
+          this.globalData.isNotAuthorization = false
+        } else {
+          this.globalData.isNotAuthorization = true
+        }
+      }
+    })
   },
   globalData: {
     userInfo: null,
-    isAuthorization: true
+    isNotAuthorization: false
   }
 })

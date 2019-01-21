@@ -7,7 +7,7 @@
   </view>
   <view class="pannel-wrap">
     <view class="canvas-wrap {{curTabIndex == 1 ? 'active' : ''}}">
-      <view class="clock-wrap" hidden="{{isCountDown || resultSuccess || resultFail}}">
+      <view class="clock-wrap" hidden="{{isCountDown}}">
         <canvas bindtouchstart="handleTouchStart" bindtouchmove="handleTouchMove" bindtouchend="handleTouchEnd" style="width: 240px; height: 240px; margin: 0 auto;" canvas-id="firstCanvas"></canvas>
         <view class="btn-wrap btn-begin">
           <button type="primary"  bindtap="createCountDown">开始</button>
@@ -57,11 +57,11 @@
       <view class="count-all-wrap">
         <view class="count-all">
           <view class="count-all-item">
-            <text class="count">{{ focusResultDay.count }}</text>
+            <text class="count">{{ focusResultDay.successCount }}</text>
             <text class="desc">今日专注次数</text>
           </view>
           <view class="count-all-item">
-            <text class="count">{{ focusResultWeek.count }}</text>
+            <text class="count">{{ focusResultWeek.successCount }}</text>
             <text class="desc">累计专注次数</text>
           </view>
         </view>
@@ -80,7 +80,7 @@
       <view class="count-week">
         <view class="count-title">
           <text>最近一周完成</text>
-          <text>{{ focusResultWeek.count }}次专注</text>
+          <text>{{ focusResultWeek.successCount }}次专注</text>
         </view>
         <view class="week-canvas">
           <canvas style="width: 315px; height: 130px;" canvas-id="weekResult"></canvas>
@@ -136,7 +136,7 @@
             <view>
               <text class="icon-total-success">{{ item.task_success_count }}</text>
               <text class="icon-total-fail">{{ item.task_fail_count }}</text>
-              <text class="icon-total">{{ item.task_all_count }}</text>
+              <text class="icon-total">{{ item.task_success_complete_time_sum }}</text>
             </view>
           </view>
           <view class="number">

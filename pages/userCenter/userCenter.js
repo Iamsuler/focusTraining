@@ -17,9 +17,8 @@ Page({
       if (code === 0) {
         let data = res.data
         let time = (data.task_all_complete_time_sum / 60).toFixed(1)
-        let task_all_count = data.task_fail_count + data.task_success_count
         this.setData({
-          focusCount: task_all_count,
+          focusCount: data.task_success_count || 0,
           focusTime: time
         })
       } else {
