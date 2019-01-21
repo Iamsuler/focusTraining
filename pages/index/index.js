@@ -773,6 +773,6 @@ Page({
     wx.setKeepScreenOn({
       keepScreenOn: false
     })
-    this.confirmAbandon('hide')
+    this.data.isCountDown && this.confirmAbandon('hide')
   }
 })

@@ -8,15 +8,12 @@ Page({
     focusTime: 0
     
   },
-  getAllCount (opr = null) {
-    let params = {
-      opr: opr
-    }
-    app.http.get('/api/tongji/allCount', params, res => {
+  getAllCount () {
+    app.http.get('/api/tongji/allCount', {}, res => {
       let code = res.code
       if (code === 0) {
         let data = res.data
-        let time = (data.task_all_complete_time_sum / 60).toFixed(1)
+        let time = (data.task_success_complete_time_sum / 60).toFixed(1)
         this.setData({
           focusCount: data.task_success_count || 0,
           focusTime: time
