@@ -52,7 +52,7 @@ cover-view {
 .btn-user {
   width: 64rpx;
   height: 64rpx;
-  margin: 100rpx auto;
+  margin: 100rpx auto 0;
 }
 
 .canvas-wrap {

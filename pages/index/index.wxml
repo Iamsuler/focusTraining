@@ -21,9 +21,9 @@
         </view>
         <!-- </view> -->
       </view>
-      <navigator hidden="{{curTabIndex != 1}}" class="btn-user" url="/pages/userCenter/userCenter">
+      <view hidden="{{curTabIndex != 1}}" class="btn-user" bindtap="navigatorTo" data-url="/pages/userCenter/userCenter">
         <image style="width: 64rpx; height: 64rpx;" src="/images/icon_user.svg" alt="个人中心"></image>
-      </navigator>
+      </view>
       <cover-view class="modal" hidden="{{!resultSuccess}}">
         <cover-view class="modal-wrap modal-success">
           <cover-view class="title">晒战绩</cover-view>

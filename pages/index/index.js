@@ -785,5 +785,29 @@ Page({
       keepScreenOn: false
     })
     // this.data.isCountDown && this.confirmAbandon('hide')
+  },
+  navigatorTo (event) {
+    let url = event.currentTarget.dataset.url
+    let _this = this
+    if (this.data.isCountDown) {
+      wx.showModal({
+        title: '提示',
+        content: '是否放弃正在进行的任务',
+        success(res) {
+          if (res.confirm) {
+            _this.confirmAbandon('hide')
+            wx.navigateTo({
+              url: url
+            })
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    } else {
+      wx.navigateTo({
+        url: url
+      })
+    }
   }
 })
