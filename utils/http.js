@@ -6,7 +6,7 @@ const http = {
   get: function (path, data, callback) {
     let Authorization = wx.getStorageSync('Authorization') || null
     Authorization = Authorization ? 'Bearer ' + Authorization : null
-    console.log(path, Authorization)
+    console.log(path, new Date())
     wx.showLoading({
       title: '加载中'
     })
@@ -34,7 +34,7 @@ const http = {
   post: function (path, data, callback) {
     let Authorization = wx.getStorageSync('Authorization') || null
     Authorization = Authorization ? 'Bearer ' + Authorization : null
-    console.log(path, Authorization)
+    console.log(path, new Date())
     wx.showLoading({
       title: '加载中'
     })

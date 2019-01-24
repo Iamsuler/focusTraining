@@ -76,6 +76,7 @@ Page({
     
     plainTime: 10,
     realTime: 0,
+    startTimeStamp: 0,
 
     weekRemainTime: {
       days: '0',
@@ -181,7 +182,9 @@ Page({
     //     }
     //   })
     // }
-
+    if (countDownTimer !== null) {
+      this.clearCanvas()
+    }
     this.initCanvas();
 
     this.drawWeekResult();
@@ -232,9 +235,7 @@ Page({
 
     minites = minites >= 10 ? minites : `0${minites}`;
     seconds = seconds >= 10 ? seconds : `0${seconds}`;
-
     return `${minites}:${seconds}`
-
   },
   calRegion (endAngle) {
     let x = Math.sin(endAngle * 2 * Math.PI) * this.data.canvasParams.originR, 
@@ -439,38 +440,40 @@ Page({
     })
   },
   startCountDown () {
+    let PLAIN_TIME = this.data.plainTime * 60;
+    const endTimeStamp = new Date().getTime() + PLAIN_TIME * 1000
+    this.setData({
+      startTimeStamp: new Date().getTime()
+    })
 
-    let startTimes = this.data.plainTime * 60, PLAIN_TIME = startTimes, curAngle = 1;
-
-    let realTime = 0;
+    // let realTime = 0;
 
     countDownTimer = setInterval( () => {
-      let endAngle = --startTimes / PLAIN_TIME;
+      let nowTimeStamp = new Date().getTime()
+      let remainTime = Math.ceil((endTimeStamp - nowTimeStamp) / 1000)
+      remainTime = remainTime > 0 ? remainTime : 0
+      let endAngle = remainTime / PLAIN_TIME;
 
-      let timeStr = this.formateTime(startTimes);
+      let timeStr = this.formateTime(remainTime);
 
-      let focusTime = this.data.plainTime - Math.ceil(startTimes / 60);
+      // let focusTime = this.data.plainTime - Math.ceil(remainTime / 60);
 
-      if (focusTime !== realTime) {
-        realTime = focusTime;
+      // if (focusTime !== realTime) {
+      //   realTime = focusTime;
 
-        this.setData({
-          realTime: realTime
-        })
+      //   this.setData({
+      //     realTime: realTime
+      //   })
+      // }
+      if (endAngle <= 0) {
+        clearInterval(countDownTimer)
+        this.updateTask(1)
       }
+
       this.drawCountDown(endAngle, timeStr)
       // this.animationDraw(curAngle, endAngle, timeStr);
 
-      curAngle = endAngle;
-      
-      if (endAngle === 0) {
-        clearInterval(countDownTimer)
-
-        // setTimeout(() => {
-        //   this.trainingSuccess();
-        // }, 1000)
-        this.updateTask(1)
-      }
+      // curAngle = endAngle;
 
     }, 1000)
 
@@ -486,28 +489,28 @@ Page({
     this.setAbandonStep(1)
     this.initCanvas();
   },
-  animationDraw(curAngle, endAngle, timeStr) {
-    let index = 0, stepAngle = (curAngle - endAngle) / 30;
+  // animationDraw(curAngle, endAngle, timeStr) {
+  //   let index = 0, stepAngle = (curAngle - endAngle) / 30;
 
-    let subStartAngle = curAngle;
+  //   let subStartAngle = curAngle;
 
-    let timer = setInterval(() => {
-      let subEndAngle = subStartAngle - stepAngle;
+  //   let timer = setInterval(() => {
+  //     let subEndAngle = subStartAngle - stepAngle;
 
-      subEndAngle = subEndAngle <= 0 ? 0 : subEndAngle;
-      index++;
+  //     subEndAngle = subEndAngle <= 0 ? 0 : subEndAngle;
+  //     index++;
 
-      this.drawCountDown(subEndAngle, timeStr)
+  //     this.drawCountDown(subEndAngle, timeStr)
 
-      subStartAngle = subEndAngle;
+  //     subStartAngle = subEndAngle;
 
-      if (index === 30) {
-        clearInterval(timer);
-      }
+  //     if (index === 30) {
+  //       clearInterval(timer);
+  //     }
 
 
-    }, 20)
-  },
+  //   }, 20)
+  // },
   updateTask (status, type) {
     let taskId = this.data.taskId
     let params = {
@@ -544,12 +547,20 @@ Page({
       this.setAbandonStep(abandonStep + 1)
     }
   },
-  confirmAbandon (type) {
+  clearCanvas () {
     let timeStr = this.data.plainTime < 10 ? '0' + this.data.plainTime + ':00' : this.data.plainTime + ':00';
     clearInterval(countDownTimer)
 
     this.drawCountDown(1, timeStr)
     this.setAbandonStep(1)
+  },
+  confirmAbandon (type) {
+    let nowTimeStamp = new Date().getTime()
+    let realTime = Math.floor((nowTimeStamp - this.data.startTimeStamp) / 60000)
+    this.setData({
+      realTime: realTime
+    })
+    this.clearCanvas()
     this.updateTask(-1, type)
   },
   closeModal (event) {
@@ -658,7 +669,7 @@ Page({
         for (const key in times_group) {
           if (times_group.hasOwnProperty(key)) {
             const item = times_group[key];
-            obj[key] = item.ratio * 100
+            obj[key] = Math.round(item.ratio * 100)
           }
         }
         this.setData({
@@ -773,6 +784,6 @@ Page({
     wx.setKeepScreenOn({
       keepScreenOn: false
     })
-    this.data.isCountDown && this.confirmAbandon('hide')
+    // this.data.isCountDown && this.confirmAbandon('hide')
   }
 })
