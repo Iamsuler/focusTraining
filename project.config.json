@@ -4,15 +4,15 @@
 		"ignore": []
 	},
 	"setting": {
-		"urlCheck": false,
+		"urlCheck": true,
 		"es6": true,
 		"postcss": true,
 		"minified": true,
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "2.5.0",
-	"appid": "wxf4e7164d5b609291",
+	"libVersion": "2.6.0",
+	"appid": "wx9996feeca19d5634",
 	"projectname": "miniTraining",
 	"isGameTourist": false,
 	"condition": {

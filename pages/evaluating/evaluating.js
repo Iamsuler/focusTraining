@@ -62,6 +62,11 @@ Page({
   onReady:function(){
     //监听页面渲染完成
   },
+  onShareAppMessage () {
+    return {
+      path: "pages/index/index"
+    }
+  },
   onShow:function(){
     //监听页面显示
   },

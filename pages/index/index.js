@@ -140,7 +140,6 @@ Page({
   },
   onShareAppMessage () {
     return {
-      title: '自定义转发标题哈哈',
       path: "pages/index/index"
     }
   },

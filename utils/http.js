@@ -1,12 +1,11 @@
 const http = {
-  baseUrl: 'http://zhuanzhu.test.xczhang.com',
+  baseUrl: 'https://zhuanzhu.test.xczhang.com',
   header: {
     'Authorization': null
   },
   get: function (path, data, callback) {
     let Authorization = wx.getStorageSync('Authorization') || null
     Authorization = Authorization ? 'Bearer ' + Authorization : null
-    console.log(path, new Date())
     wx.showLoading({
       title: '加载中'
     })
@@ -34,7 +33,6 @@ const http = {
   post: function (path, data, callback) {
     let Authorization = wx.getStorageSync('Authorization') || null
     Authorization = Authorization ? 'Bearer ' + Authorization : null
-    console.log(path, new Date())
     wx.showLoading({
       title: '加载中'
     })
